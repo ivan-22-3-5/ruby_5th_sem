@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+class NotExpressionError < StandardError; end
+
 def get_postfix_notation(infix_expression)
   operator_priorities = { 1 => %w[* /], 2 => %w[- +] }
   validate_infix_expression(infix_expression)
@@ -14,8 +16,11 @@ def get_postfix_notation(infix_expression)
   expression_elements[0]
 end
 
-def validate_infix_expression(infix_expression)
-  nil
+def validate_infix_expression(string)
+  pattern = %r"^\s*\d+(\s*[+\-*/]\s*\d+\s*)*$"
+  unless string =~ pattern
+    raise NotExpressionError.new "#{string} isn't a valid expression"
+  end
 end
 
 def main
