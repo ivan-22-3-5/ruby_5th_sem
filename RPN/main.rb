@@ -5,9 +5,14 @@ class NotExpressionError < StandardError; end
 class ParenthesesError < StandardError; end
 
 def validate_infix_expression(string)
-  pattern = %r"^\s*\d+(\s*[+\-*/]\s*\d+\s*)*$"
-  unless string =~ pattern
-    raise NotExpressionError.new "#{string} isn't a valid expression"
+  subexpressions_indexes = find_substrings_indexes_within_parentheses(string)
+  if subexpressions_indexes.empty?
+    pattern = %r"^\s*\d+(\s*[+\-*/]\s*\d+\s*)*$"
+    unless string =~ pattern
+      raise NotExpressionError.new "#{string} isn't a valid expression"
+    end
+  else
+    subexpressions_indexes.each { |indexes| validate_infix_expression(string[indexes[0]+1...indexes[1]]) }
   end
 end
 
@@ -45,8 +50,10 @@ end
 def main
   print "Please enter your expression: "
   infix_expression = gets.chomp
-  substrings_indexes = get_indexes_of_substrings_within_parentheses infix_expression
-  substrings_indexes.each { |indexes| puts infix_expression[indexes[0]..indexes[1]] }
+  #substrings_indexes = find_substrings_indexes_within_parentheses infix_expression
+  #puts substrings_indexes.to_s
+  #substrings_indexes.each { |indexes| puts infix_expression[indexes[0]..indexes[1]] }
+  validate_infix_expression infix_expression
   # puts get_postfix_notation infix_expression
 end
 
