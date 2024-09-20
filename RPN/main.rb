@@ -12,7 +12,7 @@ def validate_infix_expression(string)
       raise NotExpressionError.new "#{string} isn't a valid expression"
     end
   else
-    subexpressions_indexes.each { |indexes| validate_infix_expression(string[indexes[0]+1...indexes[1]]) }
+    subexpressions_indexes.each { |indexes| validate_infix_expression(string[indexes[0] + 1...indexes[1]]) }
   end
 end
 
@@ -36,25 +36,31 @@ end
 def get_postfix_notation(infix_expression)
   operator_priorities = { 1 => %w[* /], 2 => %w[- +] }
   validate_infix_expression(infix_expression)
-  expression_elements = infix_expression.gsub(' ', '').scan(/\d+|\S/)
+
+  subexpressions_indexes = find_substrings_indexes_within_parentheses(infix_expression.gsub(' ', ''))
+  expression_elements = infix_expression.gsub(' ', '').each_char.to_a
+
+  subexpressions_indexes.each do |indexes|
+    expression_elements[indexes[0]] = get_postfix_notation(infix_expression[indexes[0] + 1...indexes[1]])
+  end
+  subexpressions_indexes.each do |indexes|
+    expression_elements.slice!((indexes[0] + 1)..indexes[1])
+  end
+
   operator_priorities.keys.each do |priority|
     while (index = expression_elements.find_index { |element| operator_priorities[priority].include? element })
       expression_elements[index - 1] += " #{expression_elements[index + 1]} #{expression_elements[index]}"
-      expression_elements.delete_at index + 1
-      expression_elements.delete_at index
+      expression_elements.slice!(index..index + 1)
     end
   end
+
   expression_elements[0]
 end
 
 def main
   print "Please enter your expression: "
   infix_expression = gets.chomp
-  #substrings_indexes = find_substrings_indexes_within_parentheses infix_expression
-  #puts substrings_indexes.to_s
-  #substrings_indexes.each { |indexes| puts infix_expression[indexes[0]..indexes[1]] }
-  validate_infix_expression infix_expression
-  # puts get_postfix_notation infix_expression
+  puts get_postfix_notation infix_expression
 end
 
 main
