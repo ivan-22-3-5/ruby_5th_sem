@@ -5,15 +5,17 @@ class NotExpressionError < StandardError; end
 class ParenthesesError < StandardError; end
 
 def validate_infix_expression(string)
-  subexpressions_indexes = find_substrings_indexes_within_parentheses(string.chars)
+  string_with_no_spaces = string.gsub(' ', '')
+  subexpressions_indexes = find_substrings_indexes_within_parentheses(string_with_no_spaces.chars)
   if subexpressions_indexes.empty?
-    pattern = %r"^\s*\d+(\s*[+\-*/]\s*\d+\s*)*$"
+    pattern = %r"^\s*-?\s*\d+(\s*[+\-*/]\s*-?\s*\d+\s*)*$"
     unless string =~ pattern
       raise NotExpressionError.new "#{string} isn't a valid expression"
     end
   else
-    subexpressions_indexes.each { |indexes| validate_infix_expression(string[(indexes[0] + 1)...indexes[1]]) }
+    subexpressions_indexes.each { |indexes| validate_infix_expression(string_with_no_spaces[(indexes[0] + 1)...indexes[1]]) }
   end
+  string_with_no_spaces.scan(%r"(?<=^|[(+\-*/])-?\d+|[+\-*/()]")
 end
 
 def find_substrings_indexes_within_parentheses(array)
@@ -26,18 +28,16 @@ def find_substrings_indexes_within_parentheses(array)
     elsif char == ')'
       open_parentheses -= 1
       parentheses_indexes[-1] = index if open_parentheses >= 0
-      raise(ParenthesesError, "Closing parenthesis is not preceded by an opening parenthesis") if open_parentheses < 0
+      raise(ParenthesesError, "Close parenthesis is not preceded by an opening parenthesis") if open_parentheses < 0
     end
   end
-  raise(ParenthesesError, "Opening parenthesis is not closed") unless open_parentheses.zero?
+  raise(ParenthesesError, "Open parenthesis is not closed") unless open_parentheses.zero?
   parentheses_indexes.each_slice(2).to_a.each(&:freeze).freeze
 end
 
 def get_postfix_notation(infix_expression)
   operator_priorities = { 1 => %w[* /], 2 => %w[- +] }
-  validate_infix_expression(infix_expression)
-
-  expression_elements = infix_expression.gsub(' ', '').scan(/\d+|\S/)
+  expression_elements = validate_infix_expression(infix_expression)
   subexpressions_indexes = find_substrings_indexes_within_parentheses(expression_elements)
 
   subexpressions_indexes.each do |indexes|
@@ -63,4 +63,6 @@ def main
   puts get_postfix_notation infix_expression
 end
 
-main
+if __FILE__ == $0
+  main
+end
