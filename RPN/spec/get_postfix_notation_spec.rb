@@ -37,6 +37,7 @@ RSpec.describe 'get_postfix_notation' do
     it 'raises NotExpressionError for invalid expressions' do
       expect { get_postfix_notation('THIS IS NOT A VALID EXPRESSION') }.to raise_error(NotExpressionError)
       expect { get_postfix_notation('3 +') }.to raise_error(NotExpressionError)
+      expect { get_postfix_notation('+ 3 + 343 -') }.to raise_error(NotExpressionError)
     end
     it 'raises ParenthesesError for invalid parentheses use' do
       expect { get_postfix_notation('(3 + 2') }.to raise_error(ParenthesesError)
