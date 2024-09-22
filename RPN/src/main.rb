@@ -8,7 +8,12 @@ def validate_infix_expression(infix_expression)
   parentheses_indexes = find_top_level_parentheses_indexes(infix_expression.chars)
   parentheses_indexes.each { |indexes| validate_infix_expression(infix_expression[(indexes[0] + 1)...indexes[1]]) }
 
-  unless infix_expression.gsub(%r'[()]', '') =~ %r"^\s*-?\s*\d+(\s*[+\-*/]\s*-?\s*\d+\s*)*$"
+  real_number_pattern = %r"\s*-?\s*\d+(\.\d+)?"
+  operator_pattern = %r"\s*[+\-*/]\s*"
+
+  expression_pattern = %r"^#{real_number_pattern}(#{operator_pattern}#{real_number_pattern})*$"
+
+  unless infix_expression.gsub(%r'[()]', '') =~ expression_pattern
     raise NotExpressionError.new "#{infix_expression} isn't a valid expression"
   end
 end
@@ -31,10 +36,19 @@ def find_top_level_parentheses_indexes(array)
   parentheses_indexes.each_slice(2).to_a.each(&:freeze).freeze
 end
 
+def tokenize_expression(expression)
+  operator_pattern = %r"[+\-*/]"
+  float_pattern = %r"(?<=^|\(|#{operator_pattern})-?\d+\.\d+"
+  integer_pattern = %r"(?<=^|\(|#{operator_pattern})-?\d+"
+
+  expression.gsub(' ', '').scan(%r"#{float_pattern}|#{integer_pattern}|#{operator_pattern}|[()]")
+end
+
 def get_postfix_notation(infix_expression)
   operator_priorities = { 1 => %w[* /], 2 => %w[- +] }
   validate_infix_expression(infix_expression)
-  expression_elements = infix_expression.gsub(' ', '').scan(%r"(?<=^|[(+\-*/])-?\d+|[+\-*/()]")
+
+  expression_elements = tokenize_expression(infix_expression)
   parentheses_indexes = find_top_level_parentheses_indexes(expression_elements)
 
   parentheses_indexes.each do |indexes|
@@ -55,8 +69,7 @@ end
 def main
   print "Please enter your expression: "
   infix_expression = gets.chomp
-  validate_infix_expression infix_expression
-  # puts get_postfix_notation infix_expression
+  puts get_postfix_notation infix_expression
 end
 
 if __FILE__ == $0
