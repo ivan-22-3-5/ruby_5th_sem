@@ -9,7 +9,7 @@ def validate_infix_expression(infix_expression)
   parentheses_indexes.each { |indexes| validate_infix_expression(infix_expression[(indexes[0] + 1)...indexes[1]]) }
 
   real_number_pattern = %r"\s*-?\s*\d+(\.\d+)?"
-  operator_pattern = %r"\s*[+\-*/]\s*"
+  operator_pattern = %r"\s*[+\-*/^]\s*"
 
   expression_pattern = %r"^#{real_number_pattern}(#{operator_pattern}#{real_number_pattern})*$"
 
@@ -37,7 +37,7 @@ def find_top_level_parentheses_indexes(array)
 end
 
 def tokenize_expression(expression)
-  operator_pattern = %r"[+\-*/]"
+  operator_pattern = %r"[+\-*/^]"
   float_pattern = %r"(?<=^|\(|#{operator_pattern})-?\d+\.\d+"
   integer_pattern = %r"(?<=^|\(|#{operator_pattern})-?\d+"
 
@@ -45,7 +45,7 @@ def tokenize_expression(expression)
 end
 
 def get_postfix_notation(infix_expression)
-  operator_priorities = { 1 => %w[* /], 2 => %w[- +] }
+  operator_priorities = { 1 => %w[^], 2 => %w[* /], 3 => %w[- +] }
   validate_infix_expression(infix_expression)
 
   expression_elements = tokenize_expression(infix_expression)

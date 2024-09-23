@@ -50,6 +50,15 @@ RSpec.describe 'get_postfix_notation' do
     end
   end
 
+  context 'with exponentiation' do
+    it 'handles expressions with exponentiation' do
+      expect(get_postfix_notation('1 + 2 ^ 3')).to eq('1 2 3 ^ +')
+      expect(get_postfix_notation('(1 + 2) * -3.5 ^ 2 + 1')).to eq('1 2 + -3.5 2 ^ * 1 +')
+      expect(get_postfix_notation('3 + (4 * 2) ^ -4')).to eq('3 4 2 * -4 ^ +')
+      expect(get_postfix_notation('1 + 43 * 2 ^ (-4.5 + 3)')).to eq('1 43 2 -4.5 3 + ^ * +')
+    end
+  end
+
   context 'with invalid expressions' do
     it 'raises NotExpressionError for invalid expressions' do
       expect { get_postfix_notation('THIS IS NOT A VALID EXPRESSION') }.to raise_error(NotExpressionError)
