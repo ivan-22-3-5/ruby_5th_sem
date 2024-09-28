@@ -58,6 +58,7 @@ def get_postfix_notation(infix_expression)
 
   operator_priorities.keys.each do |priority|
     while (index = expression_elements.find_index { |element| operator_priorities[priority].include? element })
+      raise ZeroDivisionError.new 'Division by zero' if expression_elements[index] == '/' && expression_elements[index + 1] == '0'
       expression_elements[index - 1] += " #{expression_elements[index + 1]} #{expression_elements[index]}"
       expression_elements.slice!(index..index + 1)
     end
