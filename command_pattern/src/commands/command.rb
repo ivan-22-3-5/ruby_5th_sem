@@ -8,4 +8,8 @@ class Command
   def execute
     raise NotImplementedError.new "Method 'execute' must be implemented"
   end
+
+  def undo
+    raise NotImplementedError.new "Method 'undo' must be implemented"
+  end
 end
