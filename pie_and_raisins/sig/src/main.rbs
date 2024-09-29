@@ -1,4 +1,5 @@
 class Object
   def cut_pie: (Array[Array[Integer]] pie) -> Array[Array[Array[Integer]]]
   def validate_pie: (Array[Array[Integer]] pie) -> void
+  def find_forms: (Integer area) -> Array[Array[Integer]]
 end

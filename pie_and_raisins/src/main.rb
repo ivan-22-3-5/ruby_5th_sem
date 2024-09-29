@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 
+def find_forms(area)
+  divisors = (1..Math.sqrt(area)).filter{ |divisor| area % divisor == 0 }
+  divisors.flat_map{ |divisor| [[divisor, area / divisor], [area / divisor, divisor]] }.sort.freeze
+end
+
+def one_raisin?(piece_of_pie)
+  piece_of_pie.flatten.count(1) == 1
+end
+
 def validate_pie(pie)
   rows = pie.length
   columns = pie.first.length
@@ -21,13 +30,14 @@ def cut_pie(pie)
 end
 
 def main
-  cut_pie(
-    [
-      [1, 1, 1, 1],
-      [1, 1, 1, 1],
-      [0, 1, 0, 0],
-    ]
-  )
+  # cut_pie(
+  #   [
+  #     [1, 1, 1, 1],
+  #     [1, 1, 1, 1],
+  #     [0, 1, 0, 0],
+  #   ]
+  # )
+  puts find_forms(10).inspect
 end
 
 if __FILE__ == $0
