@@ -1,0 +1,6 @@
+class Rectangle
+  attr_reader height: Integer
+  attr_reader width: Integer
+
+  def area: -> Integer
+end
