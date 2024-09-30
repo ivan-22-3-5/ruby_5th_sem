@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 require_relative 'rectangle'
 
-def find_forms(area)
+def find_rectangles_of_area(area)
   divisors = (1..Math.sqrt(area)).filter { |divisor| area % divisor == 0 }
+
   divisors.map do |divisor|
     dividend = area / divisor
-    divisor == dividend ? [Rectangle.new(divisor, dividend)] : [Rectangle.new(divisor, dividend), Rectangle.new(dividend, divisor)]
+    divisor == dividend ? [Rectangle.new(divisor, dividend)] : [Rectangle.new(divisor, dividend),
+                                                                Rectangle.new(dividend, divisor)]
   end.flatten.sort_by(&:width).freeze
 end
 
@@ -14,22 +16,20 @@ def one_raisin?(piece_of_pie)
 end
 
 def can_fit?(rectangle, shapes)
-  rectangle = Rectangle.new(rectangle.width, rectangle.height)
   rectangles_to_fill = []
-  shapes.each do |shape|
-    return false if shape.width > rectangle.width || shape.height > rectangle.height
 
-    rectangle = Rectangle.new(rectangle.width, rectangle.height - shape.height) if rectangle.width == shape.width
-    if shape.width < rectangle.width
-      rectangles_to_fill << Rectangle.new(rectangle.width, rectangle.height - shape.height) if rectangle.height - shape.height > 0
-      rectangle = Rectangle.new(rectangle.width - shape.width, shape.height)
-    end
+  shapes.each_with_index do |shape, i|
+    break if shape.width > rectangle.width || shape.height > rectangle.height
+
+    bottom_rectangle = Rectangle.new(rectangle.width, rectangle.height - shape.height)
+    right_rectangle = Rectangle.new(rectangle.width - shape.width, shape.height)
+
+    rectangles_to_fill << bottom_rectangle if rectangle.width != shape.width && bottom_rectangle.height > 0
+    rectangle = rectangle.width == shape.width ? bottom_rectangle : right_rectangle
 
     if rectangle.height == 0
-      if rectangles_to_fill.empty?
-        return shapes.last == shape
-      end
       rectangle = rectangles_to_fill.pop
+      return shapes.length - 1 == i if rectangle.nil?
     end
   end
   false
@@ -37,6 +37,7 @@ end
 
 def find_ways_to_fit_shapes(rectangle, shapes)
   shapes = shapes.select { |shape| shape.width <= rectangle.width && shape.height <= rectangle.height }
+  return [] if shapes.empty?
   combinations = shapes.repeated_permutation(rectangle.area / shapes.first.area).to_a
   combinations.select { |shape_comb| can_fit?(rectangle, shape_comb) }
 end
@@ -57,17 +58,19 @@ end
 def cut_pie(pie)
   validate_pie(pie)
   cake_shape = Rectangle.new(pie.first.length, pie.length)
-  forms = find_forms(cake_shape.area / pie.flatten.count(1))
-  ways_to_fit = find_ways_to_fit_shapes(cake_shape, forms)
+
+  shapes = find_rectangles_of_area(cake_shape.area / pie.flatten.count(1))
+  ways_to_fit = find_ways_to_fit_shapes(cake_shape, shapes)
+
   ways_to_cut = []
   ways_to_fit.each do |way|
     pie_copy = Marshal.load(Marshal.dump(pie))
     slices = []
     way.each_with_index do |shape, i|
-      slice = pie_copy[0...shape.height].map { |row| row.slice!(0...shape.width) }
-      pie_copy = pie_copy.reject(&:empty?)
+      slice = pie_copy.reject(&:empty?)[0...shape.height].map { |row| row.slice!(0...shape.width) }
       break unless one_raisin?(slice)
       slices << slice
+
       ways_to_cut << slices if way.length - 1 == i
     end
   end
