@@ -3,9 +3,10 @@ require_relative 'rectangle'
 
 def find_forms(area)
   divisors = (1..Math.sqrt(area)).filter { |divisor| area % divisor == 0 }
-  divisors.map {
-    |divisor| [Rectangle.new(divisor, area / divisor), Rectangle.new(area / divisor, divisor)]
-  }.flatten.sort_by(&:width).freeze
+  divisors.map do |divisor|
+    dividend = area / divisor
+    divisor == dividend ? [Rectangle.new(divisor, dividend)] : [Rectangle.new(divisor, dividend), Rectangle.new(dividend, divisor)]
+  end.flatten.sort_by(&:width).freeze
 end
 
 def one_raisin?(piece_of_pie)
@@ -51,14 +52,13 @@ def cut_pie(pie)
 end
 
 def main
-  # cut_pie(
-  #   [
-  #     [1, 1, 1, 1],
-  #     [1, 1, 1, 1],
-  #     [0, 1, 0, 0],
-  #   ]
-  # )
-  puts find_forms(10).inspect
+  cut_pie(
+    [
+      [1, 0, 0, 0],
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+    ]
+  )
 end
 
 if __FILE__ == $0
