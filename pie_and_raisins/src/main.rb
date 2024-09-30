@@ -35,6 +35,12 @@ def can_fit?(rectangle, shapes)
   false
 end
 
+def find_ways_to_fit_shapes(rectangle, shapes)
+  shapes = shapes.select { |shape| shape.width <= rectangle.width && shape.height <= rectangle.height }
+  combinations = shapes.repeated_permutation(rectangle.area / shapes.first.area).to_a
+  combinations.select { |shape_comb| can_fit?(rectangle, shape_comb) }
+end
+
 def validate_pie(pie)
   cake_shape = Rectangle.new(pie.first.length, pie.length)
   flattened = pie.flatten
@@ -48,17 +54,31 @@ end
 
 def cut_pie(pie)
   validate_pie(pie)
-  nil
+  cake_shape = Rectangle.new(pie.first.length, pie.length)
+  forms = find_forms(cake_shape.area / pie.flatten.count(1))
+  ways_to_fit = find_ways_to_fit_shapes(cake_shape, forms)
+  ways_to_cut = []
+  ways_to_fit.each do |way|
+    pie_copy = Marshal.load(Marshal.dump(pie))
+    slices = []
+    way.each_with_index do |shape, i|
+      slice = pie_copy[0...shape.height].map { |row| row.slice!(0...shape.width) }
+      pie_copy = pie_copy.reject(&:empty?)
+      break unless one_raisin?(slice)
+      slices << slice
+      ways_to_cut << slices if way.length - 1 == i
+    end
+  end
+  ways_to_cut.sort_by { |way| way.map(&:length) }.first
 end
 
 def main
-  cut_pie(
-    [
-      [1, 0, 0, 0],
-      [1, 0, 0, 0],
-      [0, 1, 0, 0],
-    ]
-  )
+  puts cut_pie([
+                 [0, 1, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 1],
+                 [0, 0, 0, 0, 1, 0, 0],
+                 [0, 0, 1, 0, 0, 0, 0]
+               ]).inspect
 end
 
 if __FILE__ == $0
