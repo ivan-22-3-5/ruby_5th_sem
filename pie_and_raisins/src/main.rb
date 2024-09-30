@@ -42,6 +42,8 @@ def find_ways_to_fit_shapes(rectangle, shapes)
 end
 
 def validate_pie(pie)
+  raise 'Array is not valid' if pie.length == 0 or pie.first.length == 0
+
   cake_shape = Rectangle.new(pie.first.length, pie.length)
   flattened = pie.flatten
   number_of_raisins = flattened.count(1)
