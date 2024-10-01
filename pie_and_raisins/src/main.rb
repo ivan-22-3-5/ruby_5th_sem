@@ -55,6 +55,10 @@ def validate_pie(pie)
   raise 'Cutting into equal pieces is not possible' if cake_shape.area % number_of_raisins != 0
 end
 
+def cut_off_piece!(pie, piece_shape)
+  pie[0...piece_shape.height].map { |row| row.slice!(0...piece_shape.width) }
+end
+
 def cut_pie(pie)
   validate_pie(pie)
   cake_shape = Rectangle.new(pie.first.length, pie.length)
@@ -66,12 +70,11 @@ def cut_pie(pie)
   ways_to_fit.each do |way|
     pie_copy = Marshal.load(Marshal.dump(pie))
     slices = []
-    way.each_with_index do |shape, i|
-      slice = pie_copy.reject(&:empty?)[0...shape.height].map { |row| row.slice!(0...shape.width) }
-      break unless one_raisin?(slice)
-      slices << slice
+    way.each do |shape|
+      slices << cut_off_piece!(pie_copy.reject(&:empty?), shape)
+      break unless one_raisin?(slices[-1])
 
-      ways_to_cut << slices if way.length - 1 == i
+      ways_to_cut << slices if way.length == slices.length
     end
   end
   ways_to_cut.sort_by { |way| way.map(&:length) }.first

@@ -1,4 +1,5 @@
 class Object
+  def cut_off_piece!: (Array[Array[Integer]] pie, Rectangle piece_shape) -> (Array[Array[Integer]])
   def cut_pie: (Array[Array[Integer]] pie) -> (Array[Array[Array[Integer]]] | nil)
   def validate_pie: (Array[Array[Integer]] pie) -> void
   def one_raisin?: (Array[Array[Integer]] piece_of_pie) -> bool
