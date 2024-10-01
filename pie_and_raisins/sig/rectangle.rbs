@@ -3,4 +3,6 @@ class Rectangle
   attr_reader width: Integer
 
   def area: -> Integer
+  def can_be_filled_with?: (Array[Rectangle] shapes) -> bool
+  def ways_to_fill_with: (Array[Rectangle] shapes) -> Array[Array[Rectangle]]
 end

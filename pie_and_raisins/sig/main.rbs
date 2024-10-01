@@ -4,6 +4,4 @@ class Object
   def validate_pie: (Array[Array[Integer]] pie) -> void
   def one_raisin?: (Array[Array[Integer]] piece_of_pie) -> bool
   def find_forms: (Integer area) -> Array[Rectangle]
-  def find_ways_to_fit_shapes: (Rectangle rectangle, Array[Rectangle] shapes) -> Array[Array[Rectangle]]
-  def can_fit?: (Rectangle rectangle, Array[Rectangle] shapes) -> bool
 end
