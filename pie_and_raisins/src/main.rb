@@ -11,37 +11,6 @@ def find_rectangles_of_area(area)
   end.flatten.sort_by(&:width).freeze
 end
 
-def one_raisin?(piece_of_pie)
-  piece_of_pie.flatten.count(1) == 1
-end
-
-def can_fit?(rectangle, shapes)
-  rectangles_to_fill = []
-
-  shapes.each_with_index do |shape, i|
-    break if shape.width > rectangle.width || shape.height > rectangle.height
-
-    bottom_rectangle = Rectangle.new(rectangle.width, rectangle.height - shape.height)
-    right_rectangle = Rectangle.new(rectangle.width - shape.width, shape.height)
-
-    rectangles_to_fill << bottom_rectangle if rectangle.width != shape.width && bottom_rectangle.height > 0
-    rectangle = rectangle.width == shape.width ? bottom_rectangle : right_rectangle
-
-    if rectangle.height == 0
-      rectangle = rectangles_to_fill.pop
-      return shapes.length - 1 == i if rectangle.nil?
-    end
-  end
-  false
-end
-
-def find_ways_to_fit_shapes(rectangle, shapes)
-  shapes = shapes.select { |shape| shape.width <= rectangle.width && shape.height <= rectangle.height }
-  return [] if shapes.empty?
-  combinations = shapes.repeated_permutation(rectangle.area / shapes.first.area).to_a
-  combinations.select { |shape_comb| can_fit?(rectangle, shape_comb) }
-end
-
 def validate_pie(pie)
   raise 'Array is not valid' if pie.length == 0 or pie.first.length == 0
 
@@ -55,6 +24,10 @@ def validate_pie(pie)
   raise 'Cutting into equal pieces is not possible' if cake_shape.area % number_of_raisins != 0
 end
 
+def one_raisin?(piece_of_pie)
+  piece_of_pie.flatten.count(1) == 1
+end
+
 def cut_off_piece!(pie, piece_shape)
   pie[0...piece_shape.height].map { |row| row.slice!(0...piece_shape.width) }
 end
@@ -64,10 +37,10 @@ def cut_pie(pie)
   cake_shape = Rectangle.new(pie.first.length, pie.length)
 
   shapes = find_rectangles_of_area(cake_shape.area / pie.flatten.count(1))
-  ways_to_fit = find_ways_to_fit_shapes(cake_shape, shapes)
+  ways_to_fill = cake_shape.ways_to_fill_with shapes
 
   ways_to_cut = []
-  ways_to_fit.each do |way|
+  ways_to_fill.each do |way|
     pie_copy = Marshal.load(Marshal.dump(pie))
     slices = []
     way.each do |shape|
