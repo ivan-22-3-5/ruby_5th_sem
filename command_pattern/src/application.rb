@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'commands/append_command'
-require_relative 'commands/remove_command'
-require_relative 'commands/clear_command'
+require_relative 'commands'
 require_relative 'text_editor'
 require_relative 'button'
+include Commands
+
 class Application
   attr_accessor :text_field, :editor
   def initialize
