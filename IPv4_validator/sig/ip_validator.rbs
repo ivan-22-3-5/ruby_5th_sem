@@ -1,0 +1,3 @@
+class Object
+  def ipv4?: (String ip) -> bool
+end
