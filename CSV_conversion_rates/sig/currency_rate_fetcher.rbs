@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+module CurrencyRateFetcher
+  BASE_URL: String
+
+  def fetch_currency_rates: (String currency) -> Hash[String, Float]
+end
+

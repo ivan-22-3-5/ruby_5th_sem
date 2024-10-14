@@ -1,0 +1,3 @@
+module CSVWriter
+  def write_csv: (String filename, Array[String | Symbol] header, Array[untyped] data) -> nil
+end
