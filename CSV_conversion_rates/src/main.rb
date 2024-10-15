@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'http'
-require 'dotenv/load'
 require_relative 'currency_rate_fetcher'
 require_relative 'csv_writer'
 

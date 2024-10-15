@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 require_relative '../src/csv_writer'
+include CSVWriter
 
 RSpec.describe CSVWriter do
-  include CSVWriter
-
   describe '#write_csv' do
     let(:filename) { 'files/test_currency_rates.csv' }
     let(:header) { %w[Currency USD] }

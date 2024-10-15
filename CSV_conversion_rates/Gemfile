@@ -13,3 +13,5 @@ gem 'ostruct'
 gem 'csv'
 
 gem "dotenv", "~> 3.1"
+
+gem "webmock", "~> 3.24"

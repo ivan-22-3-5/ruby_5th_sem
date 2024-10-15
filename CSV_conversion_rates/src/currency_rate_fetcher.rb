@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'dotenv/load'
 
 module CurrencyRateFetcher
   BASE_URL = "https://v6.exchangerate-api.com/v6/#{ENV['API_KEY']}/latest/"
