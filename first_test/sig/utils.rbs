@@ -1,0 +1,3 @@
+module Utils
+  def self.my_reverse: (Array[untyped] array) -> Array[untyped]
+end
