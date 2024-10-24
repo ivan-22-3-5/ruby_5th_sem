@@ -1,0 +1,11 @@
+class Product
+  @name: String
+
+  @price: Float
+
+  attr_reader name: String
+
+  attr_reader price: Float
+
+  def initialize: (String name, Float price) -> nil
+end

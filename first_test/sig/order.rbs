@@ -1,0 +1,7 @@
+class Order
+  @products: Array[Product]
+
+  def add: -> self
+
+  def total: -> Float
+end
