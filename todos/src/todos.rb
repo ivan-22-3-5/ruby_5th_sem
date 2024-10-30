@@ -33,6 +33,11 @@ module Todos
       write_todos(todos)
     end
 
+    def clear(titles)
+      todos = read_todos.reject { |todo| titles.include?(todo['title']) }
+      write_todos(todos)
+    end
+
     def read_todos
       json_string = File.read(FILEPATH) rescue '[]'
       JSON.parse(json_string)
