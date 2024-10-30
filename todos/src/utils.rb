@@ -10,7 +10,7 @@ module Utils
   end
 
   def self.build_table(todos)
-    rows = todos.map { |todo| [todo['name'], DateTime.parse(todo['deadline']).strftime('%d.%m.%Y %H:%M'), todo['completed']]}
+    rows = todos.map { |todo| [todo['title'], DateTime.parse(todo['deadline']).strftime('%d.%m.%Y %H:%M'), todo['completed']]}
     table = Terminal::Table.new :title => "todos", :headings => %w[title deadline completed], :rows => rows
     table.style = { :border => :unicode_thick_edge }
     table
