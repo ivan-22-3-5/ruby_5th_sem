@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 require 'date'
+require 'terminal-table'
+
 module Utils
   def self.parse_datetime(str, *formats)
     formats.each do |format|
       return DateTime.strptime(str.strip, format)
     end
+  end
+
+  def self.build_table(todos)
+    rows = todos.map { |todo| [todo['name'], DateTime.parse(todo['deadline']).strftime('%d.%m.%Y %H:%M'), todo['completed']]}
+    table = Terminal::Table.new :title => "todos", :headings => %w[title deadline completed], :rows => rows
+    table.style = { :border => :unicode_thick_edge }
+    table
   end
 end

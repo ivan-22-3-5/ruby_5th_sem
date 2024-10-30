@@ -13,4 +13,9 @@ module Todos
       JSON.dump(todos + [todo], f)
     end
   end
+
+  def self.all
+    json_string = File.read(FILENAME) rescue '[]'
+    JSON.parse(json_string)
+  end
 end
