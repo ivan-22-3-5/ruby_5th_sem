@@ -11,7 +11,7 @@ class TodosApp < Thor
 
   method_option :completed, type: :boolean, default: nil, aliases: :c
   method_option :days, type: :numeric, default: nil, aliases: :d
-  method_option :expired, type: :boolean, default: nil, aliases: :e
+  method_option :expired, type: :boolean, default: nil, aliases: [:e, "--exp"]
 
   def show
     todos = Todos.all

@@ -10,7 +10,7 @@ class TodosApp < Thor
   desc "clear", "clears all todos or all that meet the criteria"
 
   method_option :completed, type: :boolean, default: false, aliases: :c
-  method_option :expired, type: :boolean, default: false, aliases: :e
+  method_option :expired, type: :boolean, default: false, aliases: [:e, "--exp"]
 
   def clear
     todos = Todos.all
