@@ -1,3 +1,4 @@
 require_relative 'commands/add'
 require_relative 'commands/show'
 require_relative 'commands/complete'
+require_relative 'commands/remove'

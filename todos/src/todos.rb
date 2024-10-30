@@ -24,6 +24,14 @@ module Todos
       write_todos(todos)
     end
 
+    def remove(title)
+      todos = read_todos
+      todo_to_delete = todos.find { |todo| todo['title'] == title }
+      raise DoesNotExistError, "Todo with the title #{title} does not exist" if todo_to_delete.nil?
+      todos.delete(todo_to_delete)
+      write_todos(todos)
+    end
+
     def read_todos
       json_string = File.read(FILENAME) rescue '[]'
       JSON.parse(json_string)
