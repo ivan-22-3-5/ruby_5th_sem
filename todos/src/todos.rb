@@ -1,9 +1,10 @@
+require 'pathname'
 module Todos
   AlreadyExistsError = Class.new(StandardError)
   DoesNotExistError = Class.new(StandardError)
   AlreadyCompletedError = Class.new(StandardError)
 
-  FILENAME = 'todos.json'
+  FILEPATH = Pathname('files/todos.json')
   class << self
     def add(todo)
       todos = read_todos
@@ -33,12 +34,13 @@ module Todos
     end
 
     def read_todos
-      json_string = File.read(FILENAME) rescue '[]'
+      json_string = File.read(FILEPATH) rescue '[]'
       JSON.parse(json_string)
     end
 
     def write_todos(todos)
-      File.open(FILENAME, 'w') do |f|
+      Dir.mkdir(FILEPATH.parent) unless FILEPATH.parent.exist?
+      File.open(FILEPATH, 'w') do |f|
         JSON.dump(todos, f)
       end
     end
