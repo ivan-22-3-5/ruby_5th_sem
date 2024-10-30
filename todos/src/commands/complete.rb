@@ -6,7 +6,7 @@ require_relative '../utils'
 
 using Rainbow
 class TodosApp < Thor
-  desc "complete TITLE", "completes todo with the given title"
+  desc "complete [TITLE]", "completes todo with the given title"
   def complete(title)
     begin
       Todos.complete(title)

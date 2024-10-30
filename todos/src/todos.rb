@@ -6,14 +6,14 @@ module Todos
 
   FILEPATH = Pathname('files/todos.json')
   class << self
-    def add(todo)
+    def add(title, deadline, completed = false)
       todos = read_todos
 
-      if todos.any? { |t| t['title'] == todo['title'] }
-        raise AlreadyExistsError, "Todo with the title #{todo['title']} already exists"
+      if todos.any? { |t| t['title'] == title }
+        raise AlreadyExistsError, "Todo with the title #{title} already exists"
       end
 
-      write_todos(todos + [todo])
+      write_todos(todos + [{ 'title' => title, 'deadline' => deadline, 'completed' => completed }])
     end
 
     def complete(title)

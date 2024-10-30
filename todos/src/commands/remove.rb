@@ -7,7 +7,7 @@ require_relative '../utils'
 using Rainbow
 
 class TodosApp < Thor
-  desc "remove TITLE", "removes todo with the given title"
+  desc "remove [TITLE]", "removes todo with the given title"
 
   def remove(title)
     begin

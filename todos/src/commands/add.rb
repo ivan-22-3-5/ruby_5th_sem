@@ -8,17 +8,16 @@ require_relative '../todos'
 using Rainbow
 
 class TodosApp < Thor
-  desc "add TITLE", "Creates todo with the given title"
+  desc "add [TITLE]", "Creates todo with the given title"
   method_option :date, type: :string, default: nil, aliases: :d
   method_option :time, type: :string, default: nil, aliases: :t
-
   def add(title)
     begin
       date = options[:date] ? Utils.parse_datetime(options[:date],  '%d.%m.%y', '%d.%m') : DateTime.now
       time = options[:time] ? Utils.parse_datetime(options[:time], '%H:%M') : DateTime.new(0)
       deadline = DateTime.new(date.year, date.month, date.day, time.hour, time.min)
 
-      Todos.add({ 'title' => title, 'completed' => false, 'deadline' => deadline })
+      Todos.add(title, deadline)
       puts "Added todo '#{title}' with deadline #{deadline.strftime('%d.%m.%y %H:%M')}".green
 
     rescue Date::Error
