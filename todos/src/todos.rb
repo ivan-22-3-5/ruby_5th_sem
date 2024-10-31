@@ -1,4 +1,5 @@
 require 'pathname'
+require 'json'
 module Todos
   AlreadyExistsError = Class.new(StandardError)
   DoesNotExistError = Class.new(StandardError)
