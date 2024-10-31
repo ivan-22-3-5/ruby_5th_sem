@@ -16,7 +16,7 @@ class TodosApp < Thor
       deadline = options[:deadline] && Utils.parse_datetime(options[:deadline],
                                                             '%d.%m.%y-%H:%M', '%d.%m-%H:%M', '%d.%m.%y', '%d.%m', '%H:%M')
       Todos.add(title, deadline)
-      date, time = deadline.strftime('%d.%m.%y %H:%M').split(' ')
+      date, time = deadline.strftime('%d.%m.%y %H:%M').split(' ') if deadline
       puts "Added todo '#{title}' with #{deadline.nil? ? 'no deadline' : "a deadline at #{time} on #{date}"}".green
 
     rescue Date::Error
