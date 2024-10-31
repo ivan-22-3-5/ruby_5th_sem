@@ -18,7 +18,7 @@ class TodosApp < Thor
 
     query = [
       options[:completed].nil? || proc { |todo| todo['completed'] == options[:completed] },
-      options[:expired].nil? || proc { |todo| (DateTime.parse(todo['deadline']) - DateTime.now) <= 0 == options[:expired] },
+      options[:expired].nil? || proc { |todo| !todo['deadline'].nil? && ((DateTime.parse(todo['deadline']) - DateTime.now) <= 0) == options[:expired] },
       options[:days].nil? || proc { |todo| (DateTime.parse(todo['deadline']) - DateTime.now) <= options[:days] }
     ].reject { |q| q == true }
 
