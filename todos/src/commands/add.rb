@@ -9,19 +9,20 @@ using Rainbow
 
 class TodosApp < Thor
   desc "add [TITLE]", "Creates todo with the given title"
-  method_option :date, type: :string, default: nil, aliases: :d
-  method_option :time, type: :string, default: nil, aliases: :t
+  method_option :deadline, type: :string, default: nil, aliases: :d
+
   def add(title)
     begin
-      date = options[:date] ? Utils.parse_datetime(options[:date],  '%d.%m.%y', '%d.%m') : DateTime.now
-      time = options[:time] ? Utils.parse_datetime(options[:time], '%H:%M') : DateTime.new(0)
-      deadline = DateTime.new(date.year, date.month, date.day, time.hour, time.min)
-
+      deadline = options[:deadline] && Utils.parse_datetime(options[:deadline],
+                                                            '%d.%m.%y-%H:%M', '%d.%m-%H:%M', '%d.%m.%y', '%d.%m', '%H:%M')
       Todos.add(title, deadline)
-      puts "Added todo '#{title}' with deadline #{deadline.strftime('%d.%m.%y %H:%M')}".green
+      date, time = deadline.strftime('%d.%m.%y %H:%M').split(' ')
+      puts "Added todo '#{title}' with #{deadline.nil? ? 'no deadline' : "a deadline at #{time} on #{date}"}".green
 
     rescue Date::Error
-      puts "[ERROR]: Invalid datetime format. Use 'dd.mm' or 'dd.mm.yy' for date and 'hh:mm' for time.".red
+      puts "[ERROR]: Invalid datetime format.\n" \
+      "[HINT]: Use 'dd.mm' or 'dd.mm.yy' for date and 'hh:mm' for time.\n" \
+      "[HINT]: Separate date and time with '-' example: '01.01-12:00".red
     rescue Todos::AlreadyExistsError
       puts "[ERROR]: Todo with the title #{title} already exists".red
     end

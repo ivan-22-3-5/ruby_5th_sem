@@ -6,8 +6,9 @@ module Todos
   AlreadyCompletedError = Class.new(StandardError)
 
   FILEPATH = Pathname('files/todos.json')
+
   class << self
-    def add(title, deadline, completed = false)
+    def add(title, deadline = nil, completed = false)
       todos = read_todos
 
       if todos.any? { |t| t['title'] == title }
