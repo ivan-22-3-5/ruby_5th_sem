@@ -1,7 +1,7 @@
-require_relative 'movies'
+require_relative 'app'
+
 def main
-  movie_title = "Atonement"
-  puts Movies.fetch_by_title(movie_title).to_table
+  App.start
 end
 
 if __FILE__ == $0
