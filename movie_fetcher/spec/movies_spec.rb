@@ -38,23 +38,12 @@ RSpec.describe Movies do
     context 'when the API response is invalid' do
       before do
         stub_request(:get, "#{Movies::BASE_URL}t=InvalidMovie")
-          .to_return(body: { "Response" => "False", "Error" => "Movie not found!" }.to_json, status: 200)
+          .to_return(body: { "Response" => "False", "Error" => "Movie not found!" }.to_json, status: 200,
+                     headers: { 'Content-Type' => 'application/json' })
       end
 
       it 'returns nil' do
         result = Movies.fetch_by_title('InvalidMovie')
-        expect(result).to be_nil
-      end
-    end
-
-    context 'when the API call fails' do
-      before do
-        stub_request(:get, "#{Movies::BASE_URL}t=Inception")
-          .to_raise(HTTP::Error)
-      end
-
-      it 'returns nil' do
-        result = Movies.fetch_by_title('Inception')
         expect(result).to be_nil
       end
     end
