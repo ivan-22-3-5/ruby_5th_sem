@@ -41,7 +41,8 @@ module Movies
   def self.fetch_by_title(title)
     begin
       response = HTTP.get("#{BASE_URL}t=#{title}")
-      return response.status.success? ? Movie.new(response.parse) : nil
+      parsed_response = response.parse
+      return parsed_response["Response"] == "True" ? Movie.new(parsed_response) : nil
     rescue HTTP::Error
       return nil
     end
